@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Nutricional Universitario</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      width: 90%;
+      margin: 20px auto;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      animation: fadeIn 1s ease-out;
+    }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        h1 {
+            color: #27ae60;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .start-btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            margin: 25px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #27ae60 0%, #2ecc71 100%);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .question-container {
+            min-height: 300px;
+            position: relative;
+        }
+
+        .question-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            animation: slideIn 0.5s ease;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            color: #34495e;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option-btn {
+            padding: 15px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-size: 1em;
+        }
+
+        .option-btn:hover {
+            transform: translateX(10px);
+            border-color: #27ae60;
+            background: #f8fff9;
+        }
+
+        .results-screen {
+            text-align: center;
+            padding: 30px;
+            animation: zoomIn 0.5s ease;
+        }
+
+        .result-emoji {
+            font-size: 4em;
+            margin: 20px 0;
+        }
+
+        .result-text {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .action-btns {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .copy-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .calendar-btn {
+            background: #27ae60;
+            color: white;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .question-text {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="welcome-screen" id="welcomeScreen">
+            <h1>🍎 Test Nutricional Universitario</h1>
+            <p>¡Descubre el estado de tus hábitos alimenticios en 10 preguntas!</p>
+            <button class="start-btn" onclick="startTest()">Comenzar Test →</button>
+        </div>
+
+        <div class="test-content" id="testContent" style="display: none;">
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="question-container" id="questionContainer"></div>
+        </div>
+
+        <div class="results-screen" id="resultsScreen" style="display: none;">
+            <div class="result-emoji" id="resultEmoji"></div>
+            <div class="result-text" id="resultText"></div>
+            <div class="action-btns" id="actionBtns"></div>
+        </div>
+    </div>
+
+    <script>
+        const questionBank = [
+            {
+                question: "¿Cuántas porciones de frutas y verduras consumes diariamente?",
+                options: [
+                    { text: "Menos de 1 porción 😞", score: 1 },
+                    { text: "1-2 porciones 😐", score: 2 },
+                    { text: "3-4 porciones 🙂", score: 3 },
+                    { text: "5 o más porciones 🥦", score: 4 }
+                ]
+            },
+            {
+                question: "¿Con qué frecuencia consumes agua en lugar de bebidas azucaradas?",
+                options: [
+                    { text: "Casi nunca 😞", score: 1 },
+                    { text: "Algunas veces 😐", score: 2 },
+                    { text: "Frecuentemente 🙂", score: 3 },
+                    { text: "Siempre 💧", score: 4 }
+                ]
+            },
+      {
+        question: "¿Con qué frecuencia consumes frutas y verduras?",
+        options: [
+          { text: "Nunca 😞", score: 1 },
+          { text: "Rara vez 😐", score: 2 },
+          { text: "A veces 🙂", score: 3 },
+          { text: "Siempre 😊", score: 4 }
+        ]
+      },
+      {
+        question: "¿Qué tan seguido eliges alimentos integrales en lugar de refinados?",
+        options: [
+          { text: "Nunca 😞", score: 1 },
+          { text: "Rara vez 😐", score: 2 },
+          { text: "A veces 🙂", score: 3 },
+          { text: "Siempre 😊", score: 4 }
+        ]
+      },
+      {
+        question: "¿Con qué regularidad consumes agua durante el día?",
+        options: [
+          { text: "Nunca 😞", score: 1 },
+          { text: "Poco 😐", score: 2 },
+          { text: "Regularmente 🙂", score: 3 },
+          { text: "Siempre 😊", score: 4 }
+        ]
+      },
+      {
+        question: "¿Cuántas veces a la semana realizas actividad física?",
+        options: [
+          { text: "Nunca 🛋️", score: 1 },
+          { text: "1-2 veces 🚶", score: 2 },
+          { text: "3-4 veces 🏃", score: 3 },
+          { text: "5 o más veces 🏋️", score: 4 }
+        ]
+      },
+      {
+        question: "¿Qué tan frecuentemente planificas tus comidas con anticipación?",
+        options: [
+          { text: "Nunca 😞", score: 1 },
+          { text: "Rara vez 😐", score: 2 },
+          { text: "A veces 🙂", score: 3 },
+          { text: "Siempre 😊", score: 4 }
+        ]
+      },
+      {
+        question: "¿Con qué frecuencia optas por alternativas frescas en lugar de alimentos procesados?",
+        options: [
+          { text: "Nunca 😞", score: 1 },
+          { text: "Rara vez 😐", score: 2 },
+          { text: "A veces 🙂", score: 3 },
+          { text: "Siempre 😊", score: 4 }
+        ]
+      },
+      {
+        question: "¿Cuánto tiempo dedicas a leer etiquetas nutricionales?",
+        options: [
+          { text: "Nunca 😞", score: 1 },
+          { text: "Poco 😐", score: 2 },
+          { text: "Regularmente 🙂", score: 3 },
+          { text: "Siempre 😊", score: 4 }
+        ]
+      },
+      {
+        question: "¿Con qué frecuencia desayunas de forma saludable?",
+        options: [
+          { text: "Nunca 😞", score: 1 },
+          { text: "Rara vez 😐", score: 2 },
+          { text: "A veces 🙂", score: 3 },
+          { text: "Siempre 😊", score: 4 }
+        ]
+      },
+      {
+        question: "¿Con qué frecuencia evitas el exceso de azúcares?",
+        options: [
+          { text: "Nunca 😞", score: 1 },
+          { text: "Rara vez 😐", score: 2 },
+          { text: "A veces 🙂", score: 3 },
+          { text: "Siempre 😊", score: 4 }
+        ]
+      },
+      {
+        question: "¿Con qué regularidad consumes porciones adecuadas?",
+        options: [
+          { text: "Nunca 😞", score: 1 },
+          { text: "Rara vez 😐", score: 2 },
+          { text: "A veces 🙂", score: 3 },
+          { text: "Siempre 😊", score: 4 }
+        ]
+      },
+      {
+        question: "¿Cuánto tiempo dedicas a preparar tus comidas en casa?",
+        options: [
+          { text: "Nunca 🍽️", score: 1 },
+          { text: "Poco 🍳", score: 2 },
+          { text: "Regularmente 🥘", score: 3 },
+          { text: "Siempre 👨‍🍳", score: 4 }
+        ]
+      },
+      {
+        question: "¿Con qué frecuencia consumes alimentos ricos en fibra?",
+        options: [
+          { text: "Nunca 😞", score: 1 },
+          { text: "Rara vez 😐", score: 2 },
+          { text: "A veces 🙂", score: 3 },
+          { text: "Siempre 😊", score: 4 }
+        ]
+      },
+      {
+        question: "¿Qué tan consciente eres de las porciones que sirves?",
+        options: [
+          { text: "Nada consciente 😞", score: 1 },
+          { text: "Poco consciente 😐", score: 2 },
+          { text: "Algo consciente 🙂", score: 3 },
+          { text: "Muy consciente 😊", score: 4 }
+        ]
+      },
+      {
+        question: "¿Con qué frecuencia planificas tus comidas para la semana?",
+        options: [
+          { text: "Nunca 😞", score: 1 },
+          { text: "Rara vez 😐", score: 2 },
+          { text: "A veces 🙂", score: 3 },
+          { text: "Siempre 😊", score: 4 }
+        ]
+      },
+{
+  "question": "¿Con qué frecuencia comes por estrés o aburrimiento?",
+  "options": [
+    { "text": "Diariamente 😣", "score": 1 },
+    { "text": "Varias veces/semana 😖", "score": 2 },
+    { "text": "Ocasionalmente 😐", "score": 3 },
+    { "text": "Casi nunca 😌", "score": 4 }
+  ]
+},
+{
+  "question": "¿Cuántas veces comes fuera de casa semanalmente?",
+  "options": [
+    { "text": "7+ veces 🍽️", "score": 1 },
+    { "text": "4-6 veces 🥡", "score": 2 },
+    { "text": "1-3 veces 🍴", "score": 3 },
+    { "text": "Casi nunca 🏠", "score": 4 }
+  ]
+},
+{
+  "question": "¿Qué cantidad de alcohol consumes semanalmente?",
+  "options": [
+    { "text": "Más de 14 unidades 🍻", "score": 1 },
+    { "text": "7-14 unidades 🍷", "score": 2 },
+    { "text": "1-6 unidades 🥂", "score": 3 },
+    { "text": "Nada 🚱", "score": 4 }
+  ]
+},
+{
+  "question": "¿Qué tanto agregas sal adicional a tus comidas?",
+  "options": [
+    { "text": "En todas las comidas 🧂", "score": 1 },
+    { "text": "Frecuentemente ⚠️", "score": 2 },
+    { "text": "Ocasionalmente 👌", "score": 3 },
+    { "text": "Nunca ❌", "score": 4 }
+  ]
+},
+{
+  "question": "¿Con qué frecuencia comes snacks después de cenar?",
+  "options": [
+    { "text": "Todas las noches 🌙", "score": 1 },
+    { "text": "3-4 veces/semana 🕘", "score": 2 },
+    { "text": "1-2 veces/semana 🕗", "score": 3 },
+    { "text": "Casi nunca 🚫", "score": 4 }
+  ]
+},
+{
+  "question": "¿Qué tan diversa es tu dieta semanal?",
+  "options": [
+    { "text": "Como siempre lo mismo 🔁", "score": 1 },
+    { "text": "Poca variedad 🥪", "score": 2 },
+    { "text": "Alguna variedad 🥗", "score": 3 },
+    { "text": "Muy variada 🌈", "score": 4 }
+  ]
+},
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedQuestions = [];
+
+        function startTest() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('testContent').style.display = 'block';
+            selectedQuestions = questionBank.sort(() => 0.5 - Math.random()).slice(0, 10);
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = selectedQuestions[currentQuestion];
+            const optionsHTML = question.options.map((option, index) => `
+                <button class="option-btn" onclick="selectOption(${index})">
+                    ${option.text}
+                </button>
+            `).join('');
+
+            document.getElementById('questionContainer').innerHTML = `
+                <div class="question-card">
+                    <div class="question-text">${question.question}</div>
+                    <div class="options-grid">${optionsHTML}</div>
+                </div>
+            `;
+
+            updateProgress();
+        }
+
+        function selectOption(optionIndex) {
+            score += selectedQuestions[currentQuestion].options[optionIndex].score;
+            currentQuestion++;
+            
+            if(currentQuestion < selectedQuestions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / selectedQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        function showResults() {
+            document.getElementById('testContent').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+            
+            const maxScore = selectedQuestions.length * 4;
+            const percentage = (score / maxScore) * 100;
+            let emoji, message, showCalendar;
+
+            if(percentage >= 90) {
+                emoji = "🎉";
+                message = `¡Excelente! (${percentage.toFixed(0)}%)<br>
+                Tus hábitos nutricionales son ejemplares. ¡Sigue así!`;
+                showCalendar = false;
+            } else if(percentage >= 70) {
+                emoji = "👍";
+                message = `Buen trabajo (${percentage.toFixed(0)}%)<br>
+                Vas por buen camino, pero hay aspectos que puedes mejorar.`;
+                showCalendar = false;
+            } else if(percentage >= 50) {
+                emoji = "🤔";
+                message = `Necesitas mejorar (${percentage.toFixed(0)}%)<br>
+                Tu alimentación requiere algunos ajustes importantes.`;
+                showCalendar = true;
+            } else {
+                emoji = "⚠️";
+                message = `Atención urgente (${percentage.toFixed(0)}%)<br>
+                Recomendamos consultar con un especialista cuanto antes.`;
+                showCalendar = true;
+            }
+
+            document.getElementById('resultEmoji').textContent = emoji;
+            document.getElementById('resultText').innerHTML = `
+                <h2>Resultado: ${score}/${maxScore}</h2>
+                <p>${message}</p>
+            `;
+
+            const buttons = `
+                <button class="action-btn restart-btn" onclick="restartTest()">
+                    <i class="fas fa-redo"></i> Reiniciar
+                </button>
+                <button class="action-btn copy-btn" onclick="copyResults()">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                ${showCalendar ? `
+                <button class="action-btn calendar-btn" onclick="scheduleAppointment()">
+                    <i class="fas fa-calendar-check"></i> Agendar cita
+                </button>` : ''}
+            `;
+
+            document.getElementById('actionBtns').innerHTML = buttons;
+        }
+
+        function restartTest() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('welcomeScreen').style.display = 'block';
+        }
+
+        function copyResults() {
+            const text = `Resultado del Test Nutricional: ${score}/${selectedQuestions.length * 4}`;
+            navigator.clipboard.writeText(text);
+            alert('Resultados copiados al portapapeles');
+        }
+
+        function scheduleAppointment() {
+            const date = new Date();
+            date.setDate(date.getDate() + 2);
+            const endDate = new Date(date);
+            endDate.setHours(endDate.getHours() + 1);
+            
+            const calendarUrl = new URL('https://calendar.google.com/calendar/render');
+            calendarUrl.searchParams.set('action', 'TEMPLATE');
+            calendarUrl.searchParams.set('text', 'Consulta Nutricional');
+            calendarUrl.searchParams.set('dates', `${formatDate(date)}/${formatDate(endDate)}`);
+            calendarUrl.searchParams.set('details', `Resultado del test: ${score}/${selectedQuestions.length * 4}`);
+            
+            window.open(calendarUrl, '_blank');
+        }
+
+        function formatDate(date) {
+            return date.toISOString().replace(/-|:|\.\d+/g, '');
+        }
+    </script>
+</body>
+</html>
