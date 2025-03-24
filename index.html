@@ -157,10 +157,34 @@
             color: white;
         }
 
-        .calendar-btn {
-            background: #27ae60;
-            color: white;
-        }
+@keyframes cambioColor {
+    0% {
+        background-color: #27ae60; /* Color inicial */
+    }
+    50% {
+        background-color: #2ecc71; /* Color intermedio */
+    }
+    100% {
+        background-color: #27ae60; /* Color final */
+    }
+}
+
+.calendar-btn {
+    background-color: #27ae60;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    animation: cambioColor 3s infinite ease-in-out; /* Animación que cambia el color */
+    transition: background-color 0.3s ease; /* Transición suave cuando se pasa el mouse */
+}
+
+.calendar-btn:hover {
+    background-color: #2ecc71; /* Color al pasar el mouse */
+}
+
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
