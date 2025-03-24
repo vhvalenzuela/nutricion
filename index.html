@@ -461,27 +461,30 @@
             const percentage = (score / maxScore) * 100;
             let emoji, message, showCalendar;
 
-            if(percentage >= 90) {
-                emoji = "🎉";
-                message = `¡Excelente! (${percentage.toFixed(0)}%)<br>
-                Tus hábitos nutricionales son ejemplares. ¡Sigue así!`;
-                showCalendar = false;
-            } else if(percentage >= 70) {
-                emoji = "👍";
-                message = `Buen trabajo (${percentage.toFixed(0)}%)<br>
-                Vas por buen camino, pero hay aspectos que puedes mejorar.`;
-                showCalendar = false;
-            } else if(percentage >= 50) {
-                emoji = "🤔";
-                message = `Necesitas mejorar (${percentage.toFixed(0)}%)<br>
-                Tu alimentación requiere algunos ajustes importantes.`;
-                showCalendar = true;
-            } else {
-                emoji = "⚠️";
-                message = `Atención urgente (${percentage.toFixed(0)}%)<br>
-                Recomendamos consultar con un especialista cuanto antes.`;
-                showCalendar = true;
-            }
+           if (percentage >= 90) {
+    emoji = "🎉";
+    message = `¡Increíble! (${percentage.toFixed(0)}%)<br>
+    Tus hábitos nutricionales son excelentes. Estás tomando decisiones inteligentes para tu bienestar. ¡Sigue así y disfruta de una vida saludable!`;
+    showCalendar = false;
+} else if (percentage >= 70) {
+    emoji = "👍";
+    message = `¡Buen trabajo! (${percentage.toFixed(0)}%)<br>
+    Vas por un camino saludable, pero aún hay margen para mejorar. Pequeños cambios pueden marcar una gran diferencia. ¡Sigue adelante!`;
+    showCalendar = false;
+} else if (percentage >= 50) {
+    emoji = "🤔";
+    message = `Tu alimentación puede mejorar (${percentage.toFixed(0)}%)<br>
+    Hay algunos hábitos que podrían estar afectando tu bienestar. Iniciar con ajustes simples te ayudará a sentirte mejor cada día.<br>
+    <strong>¿Listo para mejorar tu salud?</strong> Da el siguiente paso y <a href="#" onclick="scheduleAppointment()">agenda una cita con el nutriólogo</a>.`;
+    showCalendar = true;
+} else {
+    emoji = "⚠️";
+    message = `¡Atención! (${percentage.toFixed(0)}%)<br>
+    Es importante tomar acción cuanto antes. Tus hábitos alimenticios pueden estar afectando tu salud y bienestar.<br>
+    <strong>¡Tu cuerpo te lo agradecerá!</strong> Un especialista puede guiarte para mejorar tu nutrición. <a href="#" onclick="scheduleAppointment()">Haz clic aquí y agenda una cita</a>.`;
+    showCalendar = true;
+}
+
 
             document.getElementById('resultEmoji').textContent = emoji;
             document.getElementById('resultText').innerHTML = `
