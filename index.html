@@ -543,7 +543,7 @@
             const endDate = new Date(date);
             endDate.setHours(endDate.getHours() + 1);
             
-            const calendarUrl = new URL('https://calendar.google.com/calendar/render');
+            const calendarUrl = new URL('https://calendar.app.google/6HRd3pGoEYGWapQd8');
             calendarUrl.searchParams.set('action', 'TEMPLATE');
             calendarUrl.searchParams.set('text', 'Consulta Nutricional');
             calendarUrl.searchParams.set('dates', `${formatDate(date)}/${formatDate(endDate)}`);
